@@ -7,11 +7,15 @@ public class CharacterHealth : MonoBehaviour {
 
 	public float bottom;
 	private bool isDead;
+	private int levelNum;
+	public ShowScore sc;
 
 	// Use this for initialization
 	void Start () {
 		isDead = false;
 		bottom = -7;
+		levelNum = 1;
+		sc = GetComponent<ShowScore>();
 	}
 
 	// Update is called once per frame
@@ -31,7 +35,24 @@ public class CharacterHealth : MonoBehaviour {
     if (coll.gameObject.tag == "Enemies")
 		{
 			isDead = true;
-			StartCoroutine("GameOver");
+			if (sc != null)
+			{
+				if (sc.score >= 20)
+				{
+					Debug.Log(sc.score);
+					StartCoroutine("GameOver");
+				}
+
+				else
+				{
+					StartCoroutine("GameOver");
+				}
+				
+			}
+			else
+			{
+				StartCoroutine("GameOver");
+			}
 		}
   }
 
@@ -39,7 +60,7 @@ public class CharacterHealth : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Items")
 		{
-			StartCoroutine("Win");
+			StartCoroutine("NextLevel");
 		}
 	}
 
@@ -49,9 +70,16 @@ public class CharacterHealth : MonoBehaviour {
 		SceneManager.LoadSceneAsync("GameOver");
 	}
 
-	IEnumerator Win()
+	IEnumerator NextLevel()
 	{
 		yield return new WaitForSeconds(1);
-		SceneManager.LoadSceneAsync("GameOver");
+		levelNum = levelNum + 1;
+		SceneManager.LoadSceneAsync("Level" + levelNum);
+	}
+
+	IEnumerator Win()
+	{
+		yield return new WaitForSeconds(0.1f);
+		SceneManager.LoadSceneAsync("Win");
 	}
 }

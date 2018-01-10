@@ -5,8 +5,8 @@ public class Character2D : MonoBehaviour
 {
 	public float maxSpeed = 10.0f;
 	public float jumpForce = 800.0f;
-
-	public bool airControl = true;
+    public float stage;
+    public bool airControl = true;
 
 	bool facingRight;
 
@@ -31,7 +31,9 @@ public class Character2D : MonoBehaviour
 		facingRight = true;
 		groundRadius = 0.1f;
 		onGround = false;
-	}
+        if(stage==2)
+            anim.SetFloat("Speed", 1);
+    }
 
 	void FixedUpdate ()
 	{
@@ -39,9 +41,11 @@ public class Character2D : MonoBehaviour
 		//bool OverlapCircle(point, rad, LayerMask)
 		//returns true if there's anything in "layerMask" exist inside a circle centers at "point" (Vector2) with radius="rad" (float)
 		onGround = Physics2D.OverlapCircle (groundCheck.position, groundRadius, groundLayer);
-
-		//change the character animation by onGround state
-		anim.SetBool("onGround", onGround);
+        if (stage==2)
+             transform.position -= new Vector3(-0.0f, 0, 0);
+        
+        //change the character animation by onGround state
+        anim.SetBool("onGround", onGround);
 	}
 
 	public void Move(float movingSpeed, bool jump)
@@ -49,12 +53,14 @@ public class Character2D : MonoBehaviour
 		//left / right moving actived only when the character is on the ground or air control is premitted
 		if (onGround || airControl)
 		{
-			//change the character animation by moving speed
-			anim.SetFloat("Speed", Mathf.Abs(movingSpeed));
+            //change the character animation by moving speed
+            if(stage==0)
+                anim.SetFloat("Speed", Mathf.Abs(movingSpeed));
 
-			//move the character
-			//only change its velocity on x axis
-			GetComponent<Rigidbody2D>().velocity = new Vector2(movingSpeed*maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+
+            //move the character
+            //only change its velocity on x axis
+            GetComponent<Rigidbody2D>().velocity = new Vector2(movingSpeed*maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
 
 			//flip the character image if player input direction is different with character's facing direction
 			if (movingSpeed > 0 && !facingRight || movingSpeed < 0 && facingRight) Flip ();

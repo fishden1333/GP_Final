@@ -6,6 +6,7 @@ public class Character2DControl : MonoBehaviour
 	private Character2D character;
 	private bool jump;
 	private float movingSpeed;
+    public float charstage;
 
 	// Use this for initialization
 	void Start ()
@@ -22,13 +23,17 @@ public class Character2DControl : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		//get input by Axis set in input setting
-		movingSpeed = Input.GetAxis("Horizontal");
+        movingSpeed = Input.GetAxis("Horizontal");
+        if (charstage == 0)
+				{
+					character.Move(movingSpeed, jump);
+        }
+        else
+        {
+            character.Move(0, jump);
+        }
 
-		//pass parameters to character script, and then it can move
-		character.Move(movingSpeed, jump);
-
-		//jump is reset after each time that physical engine updated
-		jump = false;
+        //jump is reset after each time that physical engine updated
+        jump = false;
 	}
 }
